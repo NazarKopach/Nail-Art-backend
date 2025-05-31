@@ -13,7 +13,7 @@ const userSchema = new Schema(
       match: emailRegex,
       required: true,
     },
-    password: { type: String, minlenght: 6, required: true },
+    password: { type: String, required: true },
   },
   { versionKey: false, timestamps: true },
 );

@@ -12,3 +12,5 @@ export const registerController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const loginController = async (req, res) => {};
