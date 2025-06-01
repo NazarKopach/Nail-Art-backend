@@ -1,7 +1,13 @@
 import User from '../db/models/User.js';
-import Sessiongti from '../db/models/Session.js';
+import Session from '../db/models/Session.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
+import { randomBytes } from 'crypto';
+
+import {
+  accessTokenLifeTime,
+  refreshTokenLifeTime,
+} from '../constants/user.js';
 
 export const register = async (payload) => {
   const { email, password } = payload;
@@ -31,4 +37,17 @@ export const login = async ({ email, password }) => {
   if (!passwordCompare) {
     throw createHttpError(401, 'Enail or password invalid');
   }
+
+  await Session.deleteOne({ userId: user._id });
+
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  return Session.create({
+    userId: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: Date.now() + accessTokenLifeTime,
+    refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
+  });
 };

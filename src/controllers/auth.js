@@ -13,4 +13,19 @@ export const registerController = async (req, res, next) => {
   }
 };
 
-export const loginController = async (req, res) => {};
+export const loginController = async (req, res) => {
+  const session = await authServices.login(req.body);
+
+  res.cookie('sessionId', session.id, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+
+  res.json({
+    status: 200,
+    message: 'Successfully login user',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+};
