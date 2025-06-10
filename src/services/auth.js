@@ -3,6 +3,7 @@ import Session from '../db/models/Session.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
+import { validateCode } from '../utils/googleOauth2.js';
 
 import {
   accessTokenLifeTime,
@@ -50,4 +51,8 @@ export const login = async ({ email, password }) => {
     accessTokenValidUntil: Date.now() + accessTokenLifeTime,
     refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
   });
+};
+
+export const loginOrRegisterWithGoogle = async (code) => {
+  const loginTicked = await validateCode(code);
 };
