@@ -3,6 +3,7 @@ import { Router } from 'express';
 import * as authController from '../controllers/auth.js';
 
 import { ctrWrapper } from '../utils/ctrWrapper.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 import {
   authLoginSchema,

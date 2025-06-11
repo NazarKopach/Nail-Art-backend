@@ -55,4 +55,13 @@ export const login = async ({ email, password }) => {
 
 export const loginOrRegisterWithGoogle = async (code) => {
   const loginTicked = await validateCode(code);
+  const payload = loginTicked.getPayload();
+
+  let user = await User.findOne({ email: payload.email });
 };
+
+export const getUser = (filter) => Session.findOne(filter);
+
+export const getSession = (filter) => Session.findOne(filter);
+
+///// create session data !!!!
