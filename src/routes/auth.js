@@ -38,4 +38,6 @@ authRoutes.post(
   ctrWrapper(authController.loginController),
 );
 
+authRoutes.post('/refresh', ctrWrapper(authController.refreshTokenController));
+
 export default authRoutes;

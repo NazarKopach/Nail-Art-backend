@@ -10,6 +10,13 @@ import {
   refreshTokenLifeTime,
 } from '../constants/user.js';
 
+const createSessionData = () => ({
+  accessToken: randomBytes(30).toString('base64'),
+  refreshToken: randomBytes(30).toString('base64'),
+  accessTokenValidUntil: Date.now() + accessTokenLifeTime,
+  refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
+});
+
 export const register = async (payload) => {
   const { email, password } = payload;
 
@@ -41,15 +48,35 @@ export const login = async ({ email, password }) => {
 
   await Session.deleteOne({ userId: user._id });
 
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
+  const sessionData = createSessionData();
 
   return Session.create({
     userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: Date.now() + accessTokenLifeTime,
-    refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
+    ...sessionData,
+  });
+};
+
+export const refreshToken = async ({ payload }) => {
+  const oldSession = await Session.findOne({
+    _id: payload.sessionId,
+    refreshToken: payload.refreshToken,
+  });
+
+  if (!oldSession) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  if (Date.now() > oldSession.refreshTokenValidUntil) {
+    throw createHttpError(401, 'Refresh token expired');
+  }
+
+  await Session.deleteOne({ _id: payload.sessionId });
+
+  const sessionData = createSessionData();
+
+  return Session.create({
+    userId: oldSession.userId,
+    ...sessionData,
   });
 };
 
@@ -63,5 +90,3 @@ export const loginOrRegisterWithGoogle = async (code) => {
 export const getUser = (filter) => Session.findOne(filter);
 
 export const getSession = (filter) => Session.findOne(filter);
-
-///// create session data !!!!

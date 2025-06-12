@@ -4,6 +4,7 @@ import { getEnvVar } from './utils/getEnvVar.js';
 import { notFoundHandler } from './middlewares/not FoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './routes/auth.js';
+import cookieParser from 'cookie-parser';
 import { logger } from './middlewares/logger.js';
 
 export const startServer = () => {
@@ -11,6 +12,7 @@ export const startServer = () => {
 
   app.use(cors());
   app.use(express.json());
+  app.use(cookieParser());
   // app.use(logger);
 
   app.use('/auth', authRoutes);
