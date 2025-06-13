@@ -1,11 +1,14 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 import { getEnvVar } from './utils/getEnvVar.js';
 import { notFoundHandler } from './middlewares/not FoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
-import authRoutes from './routes/auth.js';
-import cookieParser from 'cookie-parser';
 import { logger } from './middlewares/logger.js';
+
+import authRoutes from './routes/auth.js';
+import bookingRouters from './routes/booking.js';
 
 export const startServer = () => {
   const app = express();
@@ -16,6 +19,8 @@ export const startServer = () => {
   // app.use(logger);
 
   app.use('/auth', authRoutes);
+
+  app.use('/bookings', bookingRouters);
 
   app.use(notFoundHandler);
 

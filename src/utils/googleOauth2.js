@@ -44,3 +44,18 @@ export const validateCode = async (code) => {
 
   return ticket;
 };
+
+export const getUserNameFromGoogleTokenPayload = (payload) => {
+  if (payload.name) return payload.name;
+  let name = '';
+  if (payload.given_name) {
+    name += payload.given_name;
+  }
+  if (payload.given_name && payload.family_name) {
+    name += ` ${payload.family_name}`;
+  }
+  if (!payload.given_name && payload.family_name) {
+    name += payload.family_name;
+    return name;
+  }
+};

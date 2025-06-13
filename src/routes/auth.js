@@ -3,7 +3,6 @@ import { Router } from 'express';
 import * as authController from '../controllers/auth.js';
 
 import { ctrWrapper } from '../utils/ctrWrapper.js';
-import { authenticate } from '../middlewares/authenticate.js';
 
 import {
   authLoginSchema,
@@ -39,5 +38,7 @@ authRoutes.post(
 );
 
 authRoutes.post('/refresh', ctrWrapper(authController.refreshTokenController));
+
+authRoutes.post('/logout', ctrWrapper(authController.logoutController));
 
 export default authRoutes;

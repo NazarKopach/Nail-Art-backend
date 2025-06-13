@@ -3,7 +3,10 @@ import Session from '../db/models/Session.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
-import { validateCode } from '../utils/googleOauth2.js';
+import {
+  validateCode,
+  getUserNameFromGoogleTokenPayload,
+} from '../utils/googleOauth2.js';
 
 import {
   accessTokenLifeTime,
@@ -56,7 +59,7 @@ export const login = async ({ email, password }) => {
   });
 };
 
-export const refreshToken = async ({ payload }) => {
+export const refreshToken = async (payload) => {
   const oldSession = await Session.findOne({
     _id: payload.sessionId,
     refreshToken: payload.refreshToken,
@@ -85,6 +88,27 @@ export const loginOrRegisterWithGoogle = async (code) => {
   const payload = loginTicked.getPayload();
 
   let user = await User.findOne({ email: payload.email });
+  const password = await bcrypt.hash(randomBytes(10).toString('base64'), 10);
+
+  if (!user) {
+    const name = getUserNameFromGoogleTokenPayload(payload);
+    await User.create({
+      email: payload.email,
+      name,
+      password,
+    });
+  }
+
+  const sessionData = createSessionData();
+
+  return Session.create({
+    userId: user._id,
+    ...sessionData,
+  });
+};
+
+export const logout = async (sessionId) => {
+  await Session.deleteOne({ _id: sessionId });
 };
 
 export const getUser = (filter) => Session.findOne(filter);
