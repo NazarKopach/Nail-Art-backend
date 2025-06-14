@@ -1,29 +1,17 @@
 import { Router } from 'express';
+import { ctrWrapper } from '../utils/ctrWrapper.js';
 
-import * as bookingServices from '../services/booking.js';
+import * as bookingController from '../controllers/booking.js';
 
 const bookingRouters = Router();
 
-bookingRouters.get('/', async (req, res) => {
-  const data = await bookingServices.getBooking();
-  res.json({
-    status: 200,
-    message: 'Successfully found booking',
-    data,
-  });
-});
+bookingRouters.get('/', ctrWrapper(bookingController.getBookingController));
 
-// app.post('/bookings', async (req, res) => {
-//   const { clientName, clientEmail, date, time } = req.body;
+bookingRouters.post('/', ctrWrapper(bookingController.addBookingController));
 
-//   const exists = await Bookings.findOne({ date, time });
-//   if (exists) {
-//     return res.status(400).json({ message: 'Слот зайнятий' });
-//   }
-
-//   const newBooking = new Bookings({ clientName, clientEmail, date, time });
-//   await newBooking.save();
-//   res.status(201).json(newBooking);
-// });
+bookingRouters.delete(
+  '/:id',
+  ctrWrapper(bookingController.deleteBookingController),
+);
 
 export default bookingRouters;
