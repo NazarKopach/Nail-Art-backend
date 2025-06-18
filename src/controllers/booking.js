@@ -3,11 +3,11 @@ import createHttpError from 'http-errors';
 import * as bookingServices from '../services/booking.js';
 
 export const getBookingController = async (req, res) => {
-  const data = await bookingServices.getBooking();
+  const bookings = await bookingServices.getBooking();
   res.json({
     status: 200,
     message: 'Successfully found booking',
-    data,
+    bookings,
   });
 };
 
