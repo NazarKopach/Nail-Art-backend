@@ -2,6 +2,8 @@ import User from '../db/models/User.js';
 import Session from '../db/models/Session.js';
 import createHttpError from 'http-errors';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { getEnvVar } from '../utils/getEnvVar.js';
 import { randomBytes } from 'crypto';
 import {
   validateCode,
@@ -20,6 +22,17 @@ const createSessionData = () => ({
   refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
 });
 
+export const updateUserWithToken = async (id) => {
+  const token = jwt.sign(
+    {
+      id,
+    },
+    getEnvVar('JWT_TOKEN'),
+  );
+
+  return User.findByIdAndUpdate(id, { token }, { new: true });
+};
+
 export const register = async (payload) => {
   const { email, password } = payload;
 
@@ -33,7 +46,7 @@ export const register = async (payload) => {
 
   const newUser = await User.create({ ...payload, password: hasPassword });
 
-  return newUser;
+  return updateUserWithToken(newUser._id);
 };
 
 export const login = async ({ email, password }) => {

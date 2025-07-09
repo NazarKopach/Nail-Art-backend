@@ -58,7 +58,15 @@ export const loginWhitGoogleController = async (req, res) => {
 export const loginController = async (req, res) => {
   const session = await authServices.login(req.body);
 
-  setupSession(res, session);
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(session.refreshTokenValidUntil),
+  });
+
+  res.cookie('sessionId', session._id.toString(), {
+    httpOnly: true,
+    expires: new Date(session.refreshTokenValidUntil),
+  });
 
   res.json({
     status: 200,
