@@ -5,22 +5,41 @@ import { generateOauthUrl } from '../utils/googleOauth2.js';
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
     expires: session.refreshTokenValidUntil,
   });
 
   res.cookie('sessionId', session.id, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
     expires: session.refreshTokenValidUntil,
   });
 };
 
 export const registerController = async (req, res, next) => {
   try {
-    await authServices.register(req.body);
+    const {
+      accessToken,
+      refreshToken,
+      sessionId,
+      refreshTokenValidUntil,
+      user,
+    } = await authServices.register(req.body);
+
+    setupSession(res, {
+      refreshToken,
+      id: sessionId,
+      refreshTokenValidUntil,
+    });
 
     res.status(201).json({
-      status: 201,
-      message: 'Successfully register user',
+      data: {
+        accessToken,
+        sessionId,
+        user,
+      },
     });
   } catch (error) {
     next(error);
@@ -58,15 +77,7 @@ export const loginWhitGoogleController = async (req, res) => {
 export const loginController = async (req, res) => {
   const session = await authServices.login(req.body);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(session.refreshTokenValidUntil),
-  });
-
-  res.cookie('sessionId', session._id.toString(), {
-    httpOnly: true,
-    expires: new Date(session.refreshTokenValidUntil),
-  });
+  setupSession(res, session);
 
   res.json({
     status: 200,

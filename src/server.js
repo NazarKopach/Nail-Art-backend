@@ -15,7 +15,7 @@ export const startServer = () => {
 
   app.use(
     cors({
-      origin: 'http://localhost:5173', // або масив, якщо кілька
+      origin: 'http://localhost:5173',
       credentials: true,
     }),
   );

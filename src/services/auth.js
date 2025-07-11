@@ -15,23 +15,18 @@ import {
   refreshTokenLifeTime,
 } from '../constants/user.js';
 
-const createSessionData = () => ({
-  accessToken: randomBytes(30).toString('base64'),
+const generateAccessToken = (userId) => {
+  return jwt.sign({ userId }, getEnvVar('JWT_TOKEN'), {
+    expiresIn: '15m',
+  });
+};
+
+const createSessionData = (userId) => ({
+  accessToken: generateAccessToken(userId),
   refreshToken: randomBytes(30).toString('base64'),
   accessTokenValidUntil: Date.now() + accessTokenLifeTime,
   refreshTokenValidUntil: Date.now() + refreshTokenLifeTime,
 });
-
-export const updateUserWithToken = async (id) => {
-  const token = jwt.sign(
-    {
-      id,
-    },
-    getEnvVar('JWT_TOKEN'),
-  );
-
-  return User.findByIdAndUpdate(id, { token }, { new: true });
-};
 
 export const register = async (payload) => {
   const { email, password } = payload;
@@ -46,7 +41,23 @@ export const register = async (payload) => {
 
   const newUser = await User.create({ ...payload, password: hasPassword });
 
-  return updateUserWithToken(newUser._id);
+  const sessionData = createSessionData(newUser._id);
+
+  const session = await Session.create({
+    userId: newUser._id,
+    ...sessionData,
+  });
+
+  return {
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+    sessionId: session._id,
+    user: {
+      _id: newUser._id,
+      email: newUser.email,
+      name: newUser.name,
+    },
+  };
 };
 
 export const login = async ({ email, password }) => {
@@ -64,7 +75,7 @@ export const login = async ({ email, password }) => {
 
   await Session.deleteOne({ userId: user._id });
 
-  const sessionData = createSessionData();
+  const sessionData = createSessionData(user._id);
 
   return Session.create({
     userId: user._id,
@@ -73,27 +84,30 @@ export const login = async ({ email, password }) => {
 };
 
 export const refreshToken = async (payload) => {
-  const oldSession = await Session.findOne({
+  const session = await Session.findOne({
     _id: payload.sessionId,
     refreshToken: payload.refreshToken,
   });
 
-  if (!oldSession) {
+  if (!session) {
     throw createHttpError(401, 'Session not found');
   }
 
-  if (Date.now() > oldSession.refreshTokenValidUntil) {
+  if (Date.now() > session.refreshTokenValidUntil) {
     throw createHttpError(401, 'Refresh token expired');
   }
 
-  await Session.deleteOne({ _id: payload.sessionId });
+  const sessionData = createSessionData(session.userId);
 
-  const sessionData = createSessionData();
+  const updatedSession = await Session.findOneAndUpdate(
+    { _id: payload.sessionId },
+    {
+      ...sessionData,
+    },
+    { new: true },
+  );
 
-  return Session.create({
-    userId: oldSession.userId,
-    ...sessionData,
-  });
+  return updatedSession;
 };
 
 export const loginOrRegisterWithGoogle = async (code) => {
@@ -105,14 +119,14 @@ export const loginOrRegisterWithGoogle = async (code) => {
 
   if (!user) {
     const name = getUserNameFromGoogleTokenPayload(payload);
-    await User.create({
+    user = await User.create({
       email: payload.email,
       name,
       password,
     });
   }
 
-  const sessionData = createSessionData();
+  const sessionData = createSessionData(user._id);
 
   return Session.create({
     userId: user._id,
