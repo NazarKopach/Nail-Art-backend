@@ -1,8 +1,12 @@
-// import Joi from 'joi';
+import Joi from 'joi';
 
-// import { emailRegex } from '../constants/user';
+import { emailRegex } from '../constants/user';
 
-// export const bookingSchema = Joi.object({
-//   name: Joi.string().required(),
-//   email: Joi.string().pattern(emailRegex).required(),
-// });
+export const bookingSchema = Joi.object({
+  clientName: Joi.string(),
+  clientEmail: Joi.string().pattern(emailRegex),
+  phoneNumber: Joi.string().min(3).max(20),
+  date: Joi.string(),
+  time: Joi.string(),
+  status: Joi.string(),
+});

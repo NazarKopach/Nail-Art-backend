@@ -138,6 +138,6 @@ export const logout = async (sessionId) => {
   await Session.deleteOne({ _id: sessionId });
 };
 
-export const getUser = (filter) => Session.findOne(filter);
+export const getUser = (filter) => User.findOne(filter);
 
 export const getSession = (filter) => Session.findOne(filter);

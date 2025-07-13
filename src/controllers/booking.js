@@ -12,7 +12,8 @@ export const getBookingController = async (req, res) => {
 };
 
 export const addBookingController = async (req, res) => {
-  const data = await bookingServices.addBooking(req.body);
+  const { _id: userId } = req.user;
+  const data = await bookingServices.addBooking({ ...req.body, userId });
 
   res.status(201).json({
     status: 201,
