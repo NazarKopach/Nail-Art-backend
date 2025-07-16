@@ -3,7 +3,8 @@ import createHttpError from 'http-errors';
 import * as bookingServices from '../services/booking.js';
 
 export const getBookingController = async (req, res) => {
-  const bookings = await bookingServices.getBooking();
+  const userId = req.user._id;
+  const bookings = await bookingServices.getBookingByUser(userId);
   res.json({
     status: 200,
     message: 'Successfully found booking',
