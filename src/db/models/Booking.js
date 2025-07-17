@@ -1,16 +1,14 @@
 import { Schema, model } from 'mongoose';
 import { handleSaveError, setUpdateSetting } from './hooks.js';
-import { typeList, typeStatus } from '../../constants/bookings.js';
+import { typeList } from '../../constants/bookings.js';
 
 const bookingSchema = new Schema(
   {
-    clientName: String,
-    clientEmail: String,
-    phoneNumber: String,
+    clientName: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
     serviceType: { type: String, default: 'nail', enum: typeList },
-    date: String,
-    time: String,
-    status: { type: String, default: 'active', enum: typeStatus },
+    time: { type: String, required: true },
+    date: { type: String, required: true },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'user',
