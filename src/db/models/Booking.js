@@ -1,12 +1,18 @@
 import { Schema, model } from 'mongoose';
 import { handleSaveError, setUpdateSetting } from './hooks.js';
-import { typeList } from '../../constants/bookings.js';
+import { extra, services } from '../../constants/bookings.js';
 
 const bookingSchema = new Schema(
   {
     clientName: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    serviceType: { type: String, default: 'nail', enum: typeList },
+    serviceType: {
+      type: String,
+      default: 'Manicure hybrydowy',
+      enum: services,
+      required: true,
+    },
+    dodatek: { type: String, default: '', enum: extra },
     time: { type: String, required: true },
     date: { type: String, required: true },
     userId: {

@@ -10,6 +10,11 @@ bookingRouters.use(authenticate);
 
 bookingRouters.get('/', ctrWrapper(bookingController.getBookingController));
 
+bookingRouters.get(
+  '/available-dates',
+  ctrWrapper(bookingController.getReservedBookingController),
+);
+
 bookingRouters.post('/', ctrWrapper(bookingController.addBookingController));
 
 bookingRouters.delete(
