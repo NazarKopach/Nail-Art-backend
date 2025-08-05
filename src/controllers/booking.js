@@ -12,17 +12,6 @@ export const getBookingController = async (req, res) => {
   });
 };
 
-export const getReservedBookingController = async (req, res) => {
-  const bookings = await bookingServices.getBooking();
-  const date = bookings.map((item) => new Date(item.time));
-  console.log(date);
-  res.json({
-    status: 200,
-    message: 'Successfully found booking',
-    date,
-  });
-};
-
 export const addBookingController = async (req, res) => {
   const { _id: userId } = req.user;
   const data = await bookingServices.addBooking({ ...req.body, userId });
