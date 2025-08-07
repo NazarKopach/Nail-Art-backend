@@ -8,7 +8,17 @@ const bookingRouters = Router();
 
 bookingRouters.use(authenticate);
 
-bookingRouters.get('/', ctrWrapper(bookingController.getBookingController));
+bookingRouters.get('/', ctrWrapper(bookingController.getAllBookingsController));
+
+bookingRouters.get(
+  '/user-by-id',
+  ctrWrapper(bookingController.getBookingByIdController),
+);
+
+bookingRouters.get(
+  '/reserved-date',
+  ctrWrapper(bookingController.getBookingReservedDateController),
+);
 
 bookingRouters.post('/', ctrWrapper(bookingController.addBookingController));
 
