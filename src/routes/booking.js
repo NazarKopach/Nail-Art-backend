@@ -16,6 +16,11 @@ bookingRouters.get(
 );
 
 bookingRouters.get(
+  '/get-reservation',
+  ctrWrapper(bookingController.getBookingReservedDateController),
+);
+
+bookingRouters.get(
   '/reserved-date',
   ctrWrapper(bookingController.getBookingReservedDateController),
 );
