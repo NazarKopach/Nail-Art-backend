@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 import { handleSaveError, setUpdateSetting } from './hooks.js';
 
-import { emailRegex } from '../../constants/user.js';
+import { emailRegex, phoneRegex } from '../../constants/user.js';
 
 const userSchema = new Schema(
   {
@@ -14,6 +14,7 @@ const userSchema = new Schema(
       required: true,
     },
     password: { type: String, required: true },
+    phone: { type: String, unique: true, match: phoneRegex, required: true },
     token: { type: String },
   },
   { versionKey: false, timestamps: true },

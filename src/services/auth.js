@@ -141,3 +141,17 @@ export const logout = async (sessionId) => {
 export const getUser = (filter) => User.findOne(filter);
 
 export const getSession = (filter) => Session.findOne(filter);
+
+export const getUserBySession = async (sessionId) => {
+  const session = await Session.findById(sessionId);
+  if (!session) throw new Error('Session not found');
+
+  const user = await User.findById(session.userId);
+  if (!user) throw new Error('User not found');
+
+  return {
+    userName: user.name,
+    userEmail: user.email,
+    userPhone: user.phone,
+  };
+};

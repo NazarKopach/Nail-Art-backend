@@ -46,6 +46,25 @@ export const registerController = async (req, res, next) => {
   }
 };
 
+export const getUserInfoController = async (req, res, next) => {
+  try {
+    const { sessionId } = req.cookies;
+    if (!sessionId) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const user = await authServices.getUserBySession(sessionId);
+
+    res.json({
+      status: 200,
+      message: 'Successfully fetched user profile',
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getOauthGoogleController = async (req, res) => {
   const url = generateOauthUrl();
 
@@ -76,7 +95,6 @@ export const loginWhitGoogleController = async (req, res) => {
 
 export const loginController = async (req, res) => {
   const session = await authServices.login(req.body);
-
   setupSession(res, session);
 
   res.json({

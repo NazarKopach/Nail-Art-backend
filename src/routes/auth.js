@@ -20,6 +20,8 @@ authRoutes.post(
   ctrWrapper(authController.registerController),
 );
 
+authRoutes.get('/user', ctrWrapper(authController.getUserInfoController));
+
 authRoutes.get(
   '/get-oauth-url',
   ctrWrapper(authController.getOauthGoogleController),

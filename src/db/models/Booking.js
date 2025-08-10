@@ -4,8 +4,6 @@ import { extra, services } from '../../constants/bookings.js';
 
 const bookingSchema = new Schema(
   {
-    clientName: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
     serviceType: {
       type: String,
       default: 'Manicure hybrydowy',
