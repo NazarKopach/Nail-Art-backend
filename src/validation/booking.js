@@ -1,7 +1,19 @@
 import Joi from 'joi';
-import { extra, services } from '../constants/bookings';
+import { extra, services } from '../constants/bookings.js';
 
 export const bookingSchema = Joi.object({
+  serviceType: Joi.string()
+    .valid(...services)
+    .default('Manicure hybrydowy')
+    .required(),
+  dodatek: Joi.string()
+    .valid(...extra, '')
+    .default(''),
+  time: Joi.string().required(),
+  date: Joi.string().required(),
+});
+
+export const bookingUpdateSchema = Joi.object({
   serviceType: Joi.string()
     .valid(...services)
     .default('Manicure hybrydowy')

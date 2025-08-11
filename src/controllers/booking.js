@@ -75,3 +75,38 @@ export const deleteBookingController = async (req, res) => {
 
   res.status(204).send();
 };
+
+export const patchContactsControlls = async (req, res) => {
+  const { id: _id } = req.params;
+  const { _id: userId } = req.user;
+  const response = await bookingServices.updateContacts(
+    { _id, userId },
+    req.body,
+  );
+
+  if (!response) throw createHttpError(404, 'Bookings not found');
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a bookings!',
+    data: response.data,
+  });
+};
+
+export const upsertContactsController = async (req, res) => {
+  const { id } = req.params;
+  const { _id: userId } = req.user;
+  const { isNew, data } = await bookingServices.updateContacts(
+    { _id: id },
+    { ...req.body, userId },
+    { upsert: true },
+  );
+
+  const status = isNew ? 201 : 200;
+
+  res.status(status).json({
+    status,
+    message: 'Successfully upsert bookings',
+    data,
+  });
+};
