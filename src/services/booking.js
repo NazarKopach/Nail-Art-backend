@@ -1,6 +1,8 @@
 import Bookings from '../db/models/Booking.js';
 
-export const getAllBookings = () => Bookings.find();
+export const getAllBookings = async () => {
+  return Bookings.find().populate('userId', 'name'); // підтягує лише name
+};
 
 export const getBookingByUser = async (userId) => {
   return await Bookings.find({ userId });
