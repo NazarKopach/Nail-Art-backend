@@ -25,11 +25,7 @@ export const getBookingReservedDateController = async (req, res) => {
   const bookings = await bookingServices.getAllBookings();
   const reservation = bookings.map((item) => {
     const reservedTime = item.time;
-    const reservedDate = new Date(item.date)
-      .toLocaleDateString()
-      .split('.')
-      .reverse()
-      .join('-');
+    const reservedDate = item.date;
     return { time: reservedTime, date: reservedDate };
   });
   res.json({

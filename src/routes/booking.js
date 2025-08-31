@@ -22,11 +22,6 @@ bookingRouters.get(
   ctrWrapper(bookingController.getBookingReservedDateController),
 );
 
-bookingRouters.get(
-  '/reserved-date',
-  ctrWrapper(bookingController.getBookingReservedDateController),
-);
-
 bookingRouters.post(
   '/',
   // validateBody(bookingSchema),
