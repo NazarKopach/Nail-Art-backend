@@ -106,3 +106,5 @@ export const upsertContactsController = async (req, res) => {
     data,
   });
 };
+
+export const one = () => {};
