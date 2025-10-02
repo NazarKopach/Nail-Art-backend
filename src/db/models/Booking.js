@@ -10,7 +10,7 @@ const bookingSchema = new Schema(
       enum: services,
       required: true,
     },
-    dodatek: { type: String, default: '', enum: extra },
+    dodatek: { type: [String], default: [], enum: extra },
     time: { type: String, required: true },
     date: { type: String, required: true },
     userId: {
