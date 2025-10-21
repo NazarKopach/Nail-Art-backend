@@ -6,9 +6,7 @@ export const bookingSchema = Joi.object({
     .valid(...services)
     .default('Manicure hybrydowy')
     .required(),
-  dodatek: Joi.string()
-    .valid(...extra, '')
-    .default(''),
+  dodatek: Joi.string().valid(...extra),
   time: Joi.string().required(),
   date: Joi.string().required(),
 });
@@ -18,9 +16,7 @@ export const bookingUpdateSchema = Joi.object({
     .valid(...services)
     .default('Manicure hybrydowy')
     .required(),
-  dodatek: Joi.string()
-    .valid(...extra, '')
-    .default(''),
+  dodatek: Joi.string().valid(...extra),
   time: Joi.string().required(),
   date: Joi.string().required(),
 });
