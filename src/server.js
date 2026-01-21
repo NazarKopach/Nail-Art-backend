@@ -3,7 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import { getEnvVar } from './utils/getEnvVar.js';
-import { notFoundHandler } from './middlewares/not FoundHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { logger } from './middlewares/logger.js';
 
@@ -13,15 +13,17 @@ import bookingRouters from './routes/booking.js';
 export const startServer = () => {
   const app = express();
 
+  app.set('trust proxy', 1);
+
   app.use(
     cors({
-      origin: 'http://localhost:5173',
+      origin: getEnvVar('CLIENT_URL'),
       credentials: true,
     }),
   );
   app.use(express.json());
   app.use(cookieParser());
-  // app.use(logger);
+  app.use(logger);
 
   app.use('/auth', authRoutes);
 
@@ -33,5 +35,5 @@ export const startServer = () => {
 
   const port = Number(getEnvVar('PORT', 3000));
 
-  app.listen(port, () => console.log(`Server is runing on ${port} port`));
+  app.listen(port, () => console.log(`Server is runing on port ${port}`));
 };
