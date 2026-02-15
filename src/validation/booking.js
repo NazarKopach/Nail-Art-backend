@@ -9,6 +9,8 @@ export const bookingSchema = Joi.object({
   dodatek: Joi.string().valid(...extra),
   time: Joi.string().required(),
   date: Joi.string().required(),
+  src: Joi.string().required(),
+  price: Joi.string().required(),
 });
 
 export const bookingUpdateSchema = Joi.object({
@@ -19,4 +21,6 @@ export const bookingUpdateSchema = Joi.object({
   dodatek: Joi.string().valid(...extra),
   time: Joi.string().required(),
   date: Joi.string().required(),
+  src: Joi.string().required(),
+  price: Joi.string().required(),
 });

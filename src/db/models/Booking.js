@@ -13,6 +13,8 @@ const bookingSchema = new Schema(
     dodatek: { type: [String], default: [], enum: extra },
     time: { type: String, required: true },
     date: { type: String, required: true },
+    src: { type: String, required: true },
+    price: { type: String, required: true },
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
