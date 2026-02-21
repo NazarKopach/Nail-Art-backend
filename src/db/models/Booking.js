@@ -1,6 +1,16 @@
 import { Schema, model } from 'mongoose';
 import { handleSaveError, setUpdateSetting } from './hooks.js';
-import { extra, services } from '../../constants/bookings.js';
+import { services } from '../../constants/bookings.js';
+
+const dodatekSchema = new Schema(
+  {
+    idDodatek: { type: Number, required: true },
+    servicesDodatek: { type: String, required: true },
+    priceDodatek: { type: String, required: true },
+    srcDodatek: { type: String, required: true },
+  },
+  { _id: false },
+);
 
 const bookingSchema = new Schema(
   {
@@ -10,7 +20,7 @@ const bookingSchema = new Schema(
       enum: services,
       required: true,
     },
-    dodatek: { type: [String], default: [], enum: extra },
+    dodatek: { type: [dodatekSchema], default: [] },
     time: { type: String, required: true },
     date: { type: String, required: true },
     src: { type: String, required: true },
